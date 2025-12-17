@@ -1,1 +1,2 @@
-println "Hello Groovy!"
+var x = 'World'
+println 'Hello ' + x
