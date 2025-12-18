@@ -6,11 +6,12 @@ class Logger {
     String processId
     File path
     File logFile
+    private String fileSeparator = System.getProperty('file.separator')
 
     Logger(String processId, String path) {
         this.processId = processId
         this.path = new File(path)
-        this.logFile = new File("${path}/${processId}.log")
+        this.logFile = new File("${path}${fileSeparator}${processId}.log")
     }
 
     // create log folder if not exist

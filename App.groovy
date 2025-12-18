@@ -16,15 +16,15 @@ class App {
 
     static Boolean isShallow = false
     static Boolean isIgnoreCase = false
+    static String fileSeparator = System.getProperty('file.separator')
 
     static void main(String[] args) {
         try {
-            String targetDir = args[0]
-            pattern = args[1]
-            replacement = args[2]
+            String targetDir = getArgument(args, 0)
+            pattern = getArgument(args, 1)
+            replacement = getArgument(args, 2)
 
-            String defaultLogPath = "${targetDir}/.log"
-            String logPath = args.length > 3 ? args[3] : defaultLogPath
+            String logPath = getArgument(args, 3, "${targetDir}${fileSeparator}.log")
 
             // get flags from arguments to update config
             List<String> flags = args.findAll { it.startsWith('--') }
@@ -34,9 +34,8 @@ class App {
             isIgnoreCase = flags.indexOf('--ignore-case') > -1
 
             // switch to form mode
-            if (args.indexOf('--form') > -1) {
+            if (flags.indexOf('--form') > -1) {
                 Scanner scan = new Scanner(System.in)
-
                 println 'Enter target directory: '
                 targetDir = scan.nextLine()
                 println 'Enter pattern: '
@@ -46,14 +45,21 @@ class App {
                 println 'Enter log path (optional): '
                 logPath = scan.nextLine()
                 if (logPath.length() == 0) {
-                    logPath = defaultLogPath
+                    logPath = "${targetDir}${fileSeparator}.log"
                 }
                 scan.close()
             }
 
             File dir = new File(targetDir)
+
+            // guard for directory
             if (!dir.exists()) {
                 throw new Exception("'${targetDir}' directory does not exist")
+            }
+
+            // guard for directory
+            if (!dir.isDirectory()) {
+                throw new Exception("'${targetDir}' is not a directory")
             }
 
             log = new Logger(processId, logPath)
@@ -95,6 +101,14 @@ class App {
         }catch (Exception e) {
             println "[failed]    : main() error: ${e.getMessage()}"
         }
+    }
+
+    // get argument
+    static String getArgument(String[] args, Integer index, String defaultValue = '') {
+        if (args.length > index) {
+            return args[index]
+        }
+        return defaultValue
     }
 
     // get current date and time
@@ -227,13 +241,13 @@ class App {
     // for backup file and return the path
     static String copyFile(File sourceFile, String content) {
         // create backup folder if not exist
-        File backupDir = new File("${sourceFile.parent}/.backup/${backupFolderName}")
+        File backupDir = new File("${sourceFile.parent}${fileSeparator}.backup${fileSeparator}${backupFolderName}")
         if (!backupDir.exists()) {
             backupDir.mkdirs()
         }
 
         // create backup file in backup folder
-        File backupFile = new File("${backupDir.absolutePath}/${sourceFile.getName()}")
+        File backupFile = new File("${backupDir.absolutePath}${fileSeparator}${sourceFile.getName()}")
         backupFile << content
 
         return backupFile.absolutePath
