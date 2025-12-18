@@ -11,7 +11,7 @@ class App {
     static String pattern
     static String replacement
     static Logger log
-    static String backupFolderName = "${processId}"
+    static String backupFolderName = processId
     static Set<String> processedFiles = new HashSet<>()
 
     static Boolean isShallow = false
