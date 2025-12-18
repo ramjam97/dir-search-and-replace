@@ -23,7 +23,6 @@ class App {
             String targetDir = getArgument(args, 0)
             pattern = getArgument(args, 1)
             replacement = getArgument(args, 2)
-
             String logPath = getArgument(args, 3, "${targetDir}${fileSeparator}.log")
 
             // get flags from arguments to update config
@@ -103,12 +102,9 @@ class App {
         }
     }
 
-    // get argument
+    // get argument from command line with default value
     static String getArgument(String[] args, Integer index, String defaultValue = '') {
-        if (args.length > index) {
-            return args[index]
-        }
-        return defaultValue
+        return args.length > index ? args[index] : defaultValue
     }
 
     // get current date and time
