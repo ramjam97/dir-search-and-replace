@@ -1,7 +1,7 @@
 # Directory Search and Replace
 
 **Command-line Utility (Groovy)**  
-**Author:** Ramil Jamolod
+**Author:** RamJam
 
 ---
 
